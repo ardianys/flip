@@ -4,6 +4,20 @@ require 'erb'
 
 class Flip
   module Api
+
+    def bank_info(code)
+      result = get(config.base_url_v2 + "/general/banks", {code: code})
+      p result
+    end
+
+    def bank_account_inquiry(data)
+      # account_number = data[:account_number]
+      # bank_code = data[:bank_code]
+      # inquiry_key = data[:inquiry_key]
+      result = post(config.base_url_v2 + "/disbursement/bank-account-inquiry", data)
+      p result
+    end
+
     def balance
       result = get(config.base_url_v2 + "/general/balance")
       result.data[:balance]
@@ -25,22 +39,23 @@ class Flip
       data[:account_number] = data[:account_number].to_s if data[:account_number].is_a?(Integer)
       data[:amount] = data[:amount].to_s if data[:amount].is_a?(Integer)
       data[:remark] = data[:remark][0..17] if data[:remark].is_a?(String)
-      Flip.config.idempotency_key = Time.now.to_i
       request_with_logging(:post, config.base_url_v3 + "/disbursement", data)
     end
 
     def get_disbursement(id: nil, idempotency: nil)
       if id
-        result = get(config.base_url_v3 + "/get-disbursement?id=#{id}")
+        result = get(config.base_url_v3 + "/get-disbursement", {id: id})
         result.data
       elsif idempotency
-        result = get(config.base_url_v3 + "/get-disbursement?idempotency-key=#{idempotency}")
+        result = get(config.base_url_v3 + "/get-disbursement", {'idempotency-key' => idempotency})
         result.data
+      else
+        # warn "Warning: Neither id nor idempotency key provided."
       end
     end
 
-    def get_disbursements
-      result = get(config.base_url_v3 + "/disbursement?sort=-id&pagination=10&page=1")
+    def get_disbursements(pagination: 10, page: 1)
+      result = get(config.base_url_v3 + "/disbursement", {sort: '-id', pagination: pagination, page: page})
       result.data
     end
   end

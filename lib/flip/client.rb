@@ -125,7 +125,7 @@ class Flip
 
       if defined?(response.body)
         response_body = JSON.parse(response.body)
-        if response_body.has_key? 'status_code'
+        if response_body.is_a?(Hash) && response_body.has_key?('status_code')
           status_code = Integer(response_body["status_code"])
           if status_code >= 400 && status_code != 407
             raise FlipError.new(

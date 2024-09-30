@@ -20,7 +20,7 @@ class Flip
 
     def_delegators :instance, :logger, :logger=, :config, :setup, :file_logger, :file_logger=
     def_delegators :instance, :request_with_logging, :basic_auth_header, :get, :post, :delete, :make_request, :patch
-    def_delegators :instance, :balance, :create_link, :disbursement, :get_disbursement, :get_disbursements
+    def_delegators :instance, :bank_info, :balance, :create_link, :disbursement, :get_disbursement, :get_disbursements, :bank_account_inquiry
 
     # Shortcut for Flip::Events
     def events

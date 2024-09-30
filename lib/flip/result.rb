@@ -51,8 +51,10 @@ class Flip
           @data = Flip::Client._json_decode(response.body)
 
           # Failback for Hash#symbolize_keys
-          @data.keys.each do |key|
-            @data[(key.to_sym rescue key) || key] = @data.delete(key)
+          if @data.is_a?(Hash)
+            @data.keys.each do |key|
+              @data[(key.to_sym rescue key) || key] = @data.delete(key)
+            end
           end
         end
 
